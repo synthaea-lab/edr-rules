@@ -3,10 +3,20 @@
 Detection content shipped to agents, kept separate from engine code so it can ship on its
 own cadence (canary rings). To be migrated/curated from `old/rules` after review.
 
-Part of the Synthaea umbrella ([synthaea-lab/edr](https://github.com/synthaea-lab/edr)),
-checked out at `<umbrella>/rules`. The engines that validate this content live in the
-agent repo; from the umbrella, `just test rules` runs the sigma/yara/ioc content suites
-against this checkout (CI does the same: `.github/workflows/content.yml`).
+Part of Synthaea, alongside the public synthaea-lab/agent, synthaea-lab/server and
+synthaea-lab/ml repositories. The engines that validate this content live in
+synthaea-lab/agent. To run the content suites, check it out next to this repo as `agent/`
+(this one as `rules/`, or point `SYNTHAEA_ROOT` at their parent) and, from `agent/`:
+
+```sh
+cargo test -p sigma --test content
+cargo test -p yara --test content
+cargo test -p intel --test content
+```
+
+Each suite loads this whole tree through the real engine: every rule must compile and fire
+on its crafted matching sample. `SYNTHAEA_REQUIRE_SIBLINGS=1` makes a missing `rules/`
+checkout fail instead of skipping. CI does the same: `.github/workflows/content.yml`.
 
 | Path | Purpose |
 | --- | --- |
