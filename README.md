@@ -3,6 +3,11 @@
 Detection content shipped to agents, kept separate from engine code so it can ship on its
 own cadence (canary rings). To be migrated/curated from `old/rules` after review.
 
+Part of the Synthaea umbrella ([synthaea-lab/edr](https://github.com/synthaea-lab/edr)),
+checked out at `<umbrella>/rules`. The engines that validate this content live in the
+agent repo; from the umbrella, `just test rules` runs the sigma/yara/ioc content suites
+against this checkout (CI does the same: `.github/workflows/content.yml`).
+
 | Path | Purpose |
 | --- | --- |
 | `sigma/` | Sigma rules — behavioral detections on the event stream, organized by platform and ATT&CK technique |
