@@ -3,10 +3,10 @@
 Detection content shipped to agents, kept separate from engine code so it can ship on its
 own cadence (canary rings). To be migrated/curated from `old/rules` after review.
 
-Part of Synthaea, alongside the public `edr-agent`, `edr-server` and `edr-ml` repositories.
-The engines that validate this content live in `edr-agent`. To run the content suites,
-clone it next to this repository (`agent/` and `rules/` side by side, or point
-`SYNTHAEA_ROOT` at their parent) and, from `agent/`:
+Part of Synthaea, alongside the public synthaea-lab/agent, synthaea-lab/server and
+synthaea-lab/ml repositories. The engines that validate this content live in
+synthaea-lab/agent. To run the content suites, check it out next to this repo as `agent/`
+(this one as `rules/`, or point `SYNTHAEA_ROOT` at their parent) and, from `agent/`:
 
 ```sh
 cargo test -p sigma --test content
