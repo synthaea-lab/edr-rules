@@ -1,0 +1,52 @@
+name: Content
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Read-only token for every job: nothing here writes to the repo, and a
+# compromised step or dependency then can't push, tag or touch PRs.
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      CARGO_TERM_COLOR: always
+      # The engines live in the agent repo: lay out the umbrella (rules/ + agent/) and
+      # make a missing sibling fail instead of skipping the content suites.
+      SYNTHAEA_ROOT: ${{ github.workspace }}
+      SYNTHAEA_REQUIRE_SIBLINGS: "1"
+    defaults:
+      run:
+        working-directory: agent
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: rules
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: synthaea-lab/edr-agent
+          path: agent
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable branch
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          workspaces: agent
+      # Each engine's content suite loads the whole rules tree through the real engine:
+      # every shipped rule must compile/validate AND fire on its crafted matching sample
+      # (agent: crates/{sigma,yara}/tests/content.rs).
+      - name: sigma content suite
+        run: cargo test -p sigma --test content
+      - name: yara content suite
+        run: cargo test -p yara --test content
+      # ioc/*.txt: one feed each, every line loaded by the engine's own parser. The
+      # public-suffix half of the check runs in the server repo's CI.
+      - name: ioc content suite
+        run: cargo test -p intel --test content
