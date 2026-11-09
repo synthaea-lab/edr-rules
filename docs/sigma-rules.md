@@ -146,8 +146,10 @@ refused instead of being run against process creations:
 | --- | --- |
 | absent | loads |
 | `category: process_creation` | loads |
-| `product: <p>` | loads only if `<p>` matches the platform directory (`linux`, `windows`, `macos`) |
-| any other `category`, any `service` | refused |
+| `category: process_creation` and `product: <p>` | loads only if `<p>` is the rule's platform directory (`linux`, `windows`, `macos`) |
+| any other `category` | refused, naming it |
+| any `service` (`security`, `sysmon`, `auditd`) | refused: log channels are not mapped |
+| a `logsource` without `category` (`product` alone included) | refused |
 
 An upstream SigmaHQ `process_creation` rule can therefore be copied into the directory of its
 product as-is, provided its fields and modifiers are in the subset and it carries the metadata

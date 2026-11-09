@@ -102,7 +102,8 @@ git clone https://github.com/synthaea-lab/rules ~/content/rules
 agent run --content-dir ~/content
 ```
 
-Content placed by hand is not signed. That is acceptable on a lab machine and nowhere else.
+Restart the agent afterwards: content copied by hand is read at startup. Content placed by hand is
+not signed. That is acceptable on a lab machine and nowhere else.
 
 ### Through a control plane
 
@@ -120,15 +121,17 @@ release channel from this repository to self-hosted servers yet; see
 
 ## Loading and reload on the agent
 
-Content is loaded at startup and again on a reload (`ReloadContent` over the local IPC channel,
-which `apply-content-manifest` sends after it writes new content). Each engine reports one of three
-outcomes, and the outcome decides what a bad change does to a running host:
+Content is loaded at startup and again on a reload. A reload is the `ReloadContent` request over
+the local IPC channel, which `apply-content-manifest` sends after it writes new content; there is
+no operator command for it, so content placed by hand takes effect at the next agent start. Each
+engine reports one of three outcomes, and the outcome decides what a bad change does to a running
+host:
 
 | Outcome | Sigma | YARA | IOC |
 | --- | --- | --- | --- |
 | Directory absent | engine unloaded | engine unloaded | set unloaded |
-| One file broken | **that rule skipped**, warning names the file and reason; the rest loads | **whole load fails**, previous rule set kept | bad lines counted and skipped; the rest of the feed loads |
-| Directory unreadable | previous engine kept | previous rule set kept | previous set kept |
+| One file broken | **that rule skipped**, warning names the file and reason; the rest loads | **whole load fails**: on a reload the previous rule set is kept, at startup YARA stays off | bad lines counted and skipped; the rest of the feed loads |
+| Directory unreadable | on a reload the previous engine is kept, at startup none loads | same as Sigma | same as Sigma |
 
 The asymmetry between Sigma and YARA comes from the engines: Sigma rules are independent
 documents, while YARA-X compiles every file into one rule set. Either way a running host never

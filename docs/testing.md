@@ -128,10 +128,12 @@ Two workflows are defined in this repository:
 
 | Workflow | What it runs |
 | --- | --- |
-| [`content.yml`](../.github/workflows/content.yml) | checks out this repository and the agent side by side, with `SYNTHAEA_REQUIRE_SIBLINGS=1`, and runs the three content suites |
+| [`content.yml`](../.github/workflows/content.yml) | checks out this repository and the agent's `main` side by side, with `SYNTHAEA_REQUIRE_SIBLINGS=1`, and runs `cargo test --test content` for `sigma`, `yara` and `intel` |
 | [`dco.yml`](../.github/workflows/dco.yml) | requires a Developer Certificate of Origin sign-off on every commit, through the organisation's shared workflow |
 
-The content workflow uses the stable Rust toolchain and the agent's `main` branch. A pull request
-that depends on an unmerged agent change (a new YARA sample, a new engine feature) fails there
-until the agent change lands. When hosted CI is unavailable, the local commands above are the gate:
-run all three suites with `SYNTHAEA_REQUIRE_SIBLINGS=1` before asking for review.
+The content workflow does not run the Sigma platform test (`--test platform`), so a run of the
+local commands above covers more than it does. A pull request that depends on an unmerged agent
+change (a new YARA sample, a new engine feature) fails against the agent's `main` until that change
+lands. Hosted CI does not run on every pull request, so the local commands are the gate: run all
+of them with `SYNTHAEA_REQUIRE_SIBLINGS=1` before asking for review, and say so in the pull
+request.

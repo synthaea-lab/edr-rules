@@ -6,7 +6,7 @@ agent's content suite reads it, builds two process-creation events from it, and 
 the real engine.
 
 Samples are data rather than test code so that a rule and its proof travel together. A pull
-request that adds a rule is complete in this repository alone, and a tool that drafts a rule (such
+request that adds a rule carries everything the content suites need to judge it, and a tool that drafts a rule (such
 as the server's hunt-to-rule draft) can emit both files without touching the agent.
 
 ## Schema

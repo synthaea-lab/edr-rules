@@ -110,9 +110,12 @@ Fix the load error and rerun.
 
 ## 6. Try it on a lab host (optional)
 
-Copy the rule into a lab agent's content directory and reload, or run the agent against a checkout
-(see [getting content onto a host](layout-and-delivery.md#getting-content-onto-a-host)). Then run
-the matching command on the lab machine and look for the rule's title in the agent's alert log.
+Copy the rule into a lab agent's content directory and restart the agent, or run the agent
+against a checkout (see [getting content onto a host](layout-and-delivery.md#getting-content-onto-a-host)).
+The agent logs `sigma: rules loaded` with the rule count for its platform; a rule it skipped is
+logged as `sigma rule skipped` with the reason. Then run the matching command on the lab machine
+and look for the rule's title in the agent's alert log (the JSON-Lines file given to
+`agent run --alerts`, `alerts.ndjson` by default).
 Do this on a disposable machine: the matching command really destroys the file.
 
 ## 7. Open the pull request
