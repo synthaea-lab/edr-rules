@@ -10,6 +10,8 @@ be reviewed, tested and released on its own cadence.
 > sample format change between versions. Use them on test machines, not on production
 > endpoints.
 
+The technical documentation is in [docs/README.md](docs/README.md).
+
 ## What is inside
 
 | Directory | Content | Evaluated by |
