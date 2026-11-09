@@ -1,18 +1,15 @@
-# rules/sigma
+# Sigma rules
 
-Sigma rules evaluated on-device by the `sigma` engine crate. Layout: one directory per
-platform, descriptive file names (the directory carries the platform, so no `lnx_`/
-`win_` infix): `linux/base64_pipe_shell.yml`, `windows/powershell_encoded.yml`.
-A host loads **only the directories its platform runs** (`SigmaEngine::load_dir_for`, #980): Linux
-`linux/`, Windows `windows/`, macOS `macos/` **and `linux/`** (the Unix-family rules, by choice).
-A rule in `macos/` never runs on a Linux host, and a rule outside the three
-directories runs nowhere. The content tests load the whole tree.
+Behavioral rules on process execution events, evaluated on the endpoint by the agent's
+[`sigma` engine](https://github.com/synthaea-lab/agent/blob/main/docs/detection/sigma.md).
 
-Every rule must stay inside the engine's supported subset (`crates/sigma` docs) — the
-engine rejects out-of-subset rules loudly at load time, and CI enforces it: the
-content workflow runs the sigma crate's content test, which loads this whole tree and
-asserts every rule both parses AND fires on a crafted matching event
-(`crates/sigma/tests/content.rs`). Adding a rule means adding its samples beside it:
-`<rule>.samples.json` with one `matching` and one `non_matching` event (ADR-0031), e.g.
-`{"matching": {"image": "/bin/bash", "cmdline": "..."}, "non_matching": {"image": "...", "cmdline": "...", "note": "the boundary this probes"}}` A rule on `ParentImage` adds `"parentimage"` to both events.
-A rule nothing can trigger is dead content.
+| Directory | Loaded on |
+| --- | --- |
+| `linux/` | Linux and macOS |
+| `windows/` | Windows |
+| `macos/` | macOS |
+
+Each `<rule>.yml` has a `<rule>.samples.json` beside it, with one event the rule must match
+and one near miss it must ignore. The engine refuses any rule outside its supported Sigma
+subset at load time. See [CONTRIBUTING.md](../CONTRIBUTING.md#sigma-rules) for the rule and
+sample conventions and for how to run the content suite.

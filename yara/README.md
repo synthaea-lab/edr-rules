@@ -1,9 +1,14 @@
-# rules/yara
+# YARA rules
 
-YARA rules for file scanning (memory scanning later), evaluated on-device by the
-`yara` crate (YARA-X). Layout convention: `<category>/<family-or-technique>.yar`
-(e.g. `malware/xmrig.yar`, `lab/synthaea_lab_payload.yar`).
+File and process-memory content rules, compiled by the agent's
+[`yara` engine](https://github.com/synthaea-lab/agent/blob/main/docs/detection/yara.md)
+(YARA-X). Files follow `<category>/<family-or-technique>.yar`.
 
-CI enforces (content workflow, `crates/yara/tests/content.rs`): every shipped rule
-file compiles — a broken rule is a hard failure naming the file — and fires on a
-crafted matching sample, one per rule. A rule nothing can trigger is dead content.
+| Directory | Content |
+| --- | --- |
+| `webshell/` | Minimal PHP and JSP web shell shapes |
+| `lab/` | A marker for the benign payloads dropped by lab scenarios |
+
+Every rule carries `severity`, `technique` and `falsepositives` metadata, and every file must
+compile. See [CONTRIBUTING.md](../CONTRIBUTING.md#yara-rules) for the conventions and for how
+to run the content suite.
