@@ -67,8 +67,8 @@ Linux). A host loads only the Sigma directories for its platform:
 
 The agent packages do not bundle these rules yet. To use them, copy `sigma/` and `yara/`
 into `<content-dir>/rules/`, or run `agent run --content-dir <dir>` where `<dir>` contains
-this checkout as `rules/`. With a control plane, content is distributed as a
-signed manifest per rollout ring. The
+this checkout as `rules/`. With a control plane, content is distributed as a signed
+manifest per rollout ring. The
 [detection content guide](https://www.synthaea.com/en/docs/detection-content) covers both
 paths.
 
@@ -85,7 +85,8 @@ cargo test -p yara --test content
 ```
 
 The Rust toolchain is pinned by the agent's `rust-toolchain.toml` and installed by `rustup`
-on first use. [CONTRIBUTING.md](CONTRIBUTING.md) describes the suites in detail.
+on first use. On Linux the agent repository runs test binaries through `sudo -E`, so expect a
+password prompt. [CONTRIBUTING.md](CONTRIBUTING.md) describes the suites in detail.
 
 ## Contributing
 
